@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'theme.dart';
+import 'task_detail_screen.dart';
+import 'quiz_info_screen.dart';
 
 class CourseDetailScreen extends StatelessWidget {
   final String title;
@@ -16,9 +18,9 @@ class CourseDetailScreen extends StatelessWidget {
     });
 
     final List<Map<String, dynamic>> tasks = [
-      {'title': 'Tugas 1', 'deadline': '25 Des 2025', 'done': true},
-      {'title': 'Kuis 1', 'deadline': '28 Des 2025', 'done': false},
-      {'title': 'Tugas 2', 'deadline': '02 Jan 2026', 'done': false},
+      {'title': 'Tugas 1', 'deadline': '25 Des 2025', 'done': true, 'type': 'tugas'},
+      {'title': 'Kuis 1', 'deadline': '28 Des 2025', 'done': false, 'type': 'kuis'},
+      {'title': 'Tugas 2', 'deadline': '02 Jan 2026', 'done': false, 'type': 'tugas'},
     ];
 
     return DefaultTabController(
@@ -62,10 +64,17 @@ class CourseDetailScreen extends StatelessWidget {
                 return Card(
                   margin: const EdgeInsets.symmetric(vertical: 6),
                   child: ListTile(
-                    leading: Icon(Icons.assignment, color: kPrimaryColor),
+                    leading: Icon(t['type'] == 'kuis' ? Icons.quiz : Icons.assignment, color: kPrimaryColor),
                     title: Text(t['title']),
                     subtitle: Text('Tenggat: ${t['deadline']}'),
                     trailing: t['done'] == true ? Icon(Icons.check_circle, color: kAccentColor) : null,
+                    onTap: () {
+                      if (t['type'] == 'tugas') {
+                        Navigator.of(context).push(MaterialPageRoute(builder: (_) => TaskDetailScreen(title: t['title'])));
+                      } else if (t['type'] == 'kuis') {
+                        Navigator.of(context).push(MaterialPageRoute(builder: (_) => QuizInfoScreen(title: t['title'])));
+                      }
+                    },
                   ),
                 );
               },

@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'theme.dart';
 import 'task_detail_screen.dart';
 import 'quiz_info_screen.dart';
+import 'video_player_screen.dart';
+import 'document_viewer_screen.dart';
 
 class CourseDetailScreen extends StatelessWidget {
   final String title;
@@ -12,8 +14,8 @@ class CourseDetailScreen extends StatelessWidget {
     final List<Map<String, dynamic>> meetings = List.generate(8, (i) => {
       'title': 'Pertemuan ${i + 1}',
       'content': [
-        {'title': 'Pengantar topik ${i + 1}', 'done': i % 3 == 0},
-        {'title': 'Latihan dan referensi', 'done': i % 2 == 0},
+        {'title': 'Pengantar topik ${i + 1}', 'done': i % 3 == 0, 'type': i % 2 == 0 ? 'video' : 'doc'},
+        {'title': 'Latihan dan referensi', 'done': i % 2 == 0, 'type': 'doc'},
       ]
     });
 
@@ -46,11 +48,26 @@ class CourseDetailScreen extends StatelessWidget {
                 final m = meetings[idx];
                 return ExpansionTile(
                   title: Text(m['title']),
-                  children: (m['content'] as List<Map<String, dynamic>>).map((s) => ListTile(
-                    leading: const Icon(Icons.article),
-                    title: Text(s['title']),
-                    trailing: s['done'] == true ? Icon(Icons.check_circle, color: kAccentColor) : null,
-                  )).toList(),
+                  children: (m['content'] as List<Map<String, dynamic>>).map((s) {
+                    Icon leading;
+                    if (s['type'] == 'video') {
+                      leading = const Icon(Icons.play_circle_fill);
+                    } else {
+                      leading = const Icon(Icons.description);
+                    }
+                    return ListTile(
+                      leading: leading,
+                      title: Text(s['title']),
+                      trailing: s['done'] == true ? Icon(Icons.check_circle, color: kAccentColor) : null,
+                      onTap: () {
+                        if (s['type'] == 'video') {
+                          Navigator.of(context).push(MaterialPageRoute(builder: (_) => VideoPlayerScreen(title: s['title'])));
+                        } else {
+                          Navigator.of(context).push(MaterialPageRoute(builder: (_) => DocumentViewerScreen(title: s['title'])));
+                        }
+                      },
+                    );
+                  }).toList(),
                 );
               },
             ),

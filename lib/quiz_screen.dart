@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'theme.dart';
+import 'quiz_result_screen.dart';
 
 class QuizScreen extends StatefulWidget {
   final String title;
@@ -122,10 +123,13 @@ class _QuizScreenState extends State<QuizScreen> {
                       _current += 1;
                       _selected = -1;
                     });
+                  } else {
+                    // finished, show result
+                    Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => const QuizResultScreen(score: 85.0)));
                   }
                 },
                 style: ElevatedButton.styleFrom(backgroundColor: kPrimaryColor),
-                child: const Text('Soal Selanjutnya'),
+                child: Text(_current < _questions.length - 1 ? 'Soal Selanjutnya' : 'Selesai'),
               ),
             )
           ],

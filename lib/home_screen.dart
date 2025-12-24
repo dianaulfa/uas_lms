@@ -19,10 +19,22 @@ class _HomeScreenState extends State<HomeScreen> {
   int _currentBanner = 0;
   Timer? _bannerTimer;
 
-  final List<String> _bannerImages = [
-    'assets/images/banner1.png',
-    'assets/images/banner2.png',
-    'assets/images/banner3.png',
+  final List<Map<String, String>> _banners = [
+    {
+      'image': 'assets/images/banner1.png',
+      'title': 'Pengumuman UTS',
+      'subtitle': 'Jadwal UTS dimulai 5 Januari 2026',
+    },
+    {
+      'image': 'assets/images/banner2.png',
+      'title': 'Pendaftaran PKL',
+      'subtitle': 'Buka sampai 10 Januari 2026',
+    },
+    {
+      'image': 'assets/images/banner3.png',
+      'title': 'Workshop Flutter',
+      'subtitle': 'Gratis untuk 50 peserta pertama',
+    },
   ];
 
   @override
@@ -31,8 +43,8 @@ class _HomeScreenState extends State<HomeScreen> {
     displayName = _nameFromEmail(widget.userEmail);
     _pageController = PageController(initialPage: 0);
     _bannerTimer = Timer.periodic(const Duration(seconds: 3), (_) {
-      if (_bannerImages.isEmpty) return;
-      _currentBanner = (_currentBanner + 1) % _bannerImages.length;
+      if (_banners.isEmpty) return;
+      _currentBanner = (_currentBanner + 1) % _banners.length;
       _pageController.animateToPage(_currentBanner, duration: const Duration(milliseconds: 300), curve: Curves.easeInOut);
     });
   }
@@ -114,16 +126,64 @@ class _HomeScreenState extends State<HomeScreen> {
                   const SizedBox(height: 8),
                   SizedBox(
                     height: 140,
-                    child: PageView.builder(
-                      controller: _pageController,
-                      itemCount: _bannerImages.length,
-                      itemBuilder: (context, index) {
-                        final path = _bannerImages[index];
-                        return ClipRRect(
-                          borderRadius: BorderRadius.circular(10),
-                          child: Image.asset(path, fit: BoxFit.cover, errorBuilder: (c, e, s) => Container(color: Colors.grey[300], child: Center(child: Text('Banner')))),
-                        );
-                      },
+                    child: Column(
+                      children: [
+                        Expanded(
+                          child: PageView.builder(
+                            controller: _pageController,
+                            itemCount: _banners.length,
+                            onPageChanged: (p) => setState(() => _currentBanner = p),
+                            itemBuilder: (context, index) {
+                              final banner = _banners[index];
+                              final path = banner['image']!;
+                              final title = banner['title']!;
+                              final subtitle = banner['subtitle']!;
+                              return GestureDetector(
+                                onTap: () {
+                                  showDialog(context: context, builder: (_) => AlertDialog(title: Text(title), content: Text(subtitle), actions: [TextButton(onPressed: () => Navigator.pop(context), child: const Text('Tutup'))]));
+                                },
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(10),
+                                  child: Stack(
+                                    fit: StackFit.expand,
+                                    children: [
+                                      Image.asset(path, fit: BoxFit.cover, errorBuilder: (c, e, s) => Container(color: Colors.grey[300])),
+                                      Container(
+                                        decoration: BoxDecoration(
+                                          gradient: LinearGradient(colors: [Colors.black.withOpacity(0.45), Colors.transparent], begin: Alignment.bottomCenter, end: Alignment.topCenter),
+                                        ),
+                                      ),
+                                      Positioned(
+                                        left: 12,
+                                        bottom: 12,
+                                        right: 12,
+                                        child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            Text(title, style: const TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold)),
+                                            const SizedBox(height: 4),
+                                            Text(subtitle, style: const TextStyle(color: Colors.white70, fontSize: 12)),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: List.generate(_banners.length, (i) => Container(
+                                margin: const EdgeInsets.symmetric(horizontal: 4),
+                                width: i == _currentBanner ? 18 : 8,
+                                height: 8,
+                                decoration: BoxDecoration(color: i == _currentBanner ? kPrimaryColor : Colors.grey[300], borderRadius: BorderRadius.circular(8)),
+                              )),
+                        ),
+                      ],
                     ),
                   ),
                 ],

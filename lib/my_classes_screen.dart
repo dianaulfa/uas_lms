@@ -8,12 +8,12 @@ class MyClassesScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final List<Map<String, dynamic>> courses = [
-      {'title': 'UI/UX', 'lecturer': 'Dosen A', 'progress': 0.45},
-      {'title': 'Sistem Operasi', 'lecturer': 'Dosen B', 'progress': 0.7},
-      {'title': 'Kewarganegaraan', 'lecturer': 'Dosen C', 'progress': 0.2},
-      {'title': 'Multimedia', 'lecturer': 'Dosen D', 'progress': 0.55},
-      {'title': 'Bahasa Inggris', 'lecturer': 'Dosen E', 'progress': 0.8},
-      {'title': 'Olah Raga', 'lecturer': 'Dosen F', 'progress': 0.1},
+      {'title': 'UI/UX', 'lecturer': 'Dosen A', 'progress': 0.45, 'image': 'https://picsum.photos/seed/uiux/200/200'},
+      {'title': 'Sistem Operasi', 'lecturer': 'Dosen B', 'progress': 0.7, 'image': 'https://picsum.photos/seed/sos/200/200'},
+      {'title': 'Kewarganegaraan', 'lecturer': 'Dosen C', 'progress': 0.2, 'image': 'https://picsum.photos/seed/kn/200/200'},
+      {'title': 'Multimedia', 'lecturer': 'Dosen D', 'progress': 0.55, 'image': 'https://picsum.photos/seed/multimedia/200/200'},
+      {'title': 'Bahasa Inggris', 'lecturer': 'Dosen E', 'progress': 0.8, 'image': 'https://picsum.photos/seed/eng/200/200'},
+      {'title': 'Olah Raga', 'lecturer': 'Dosen F', 'progress': 0.1, 'image': 'https://picsum.photos/seed/sport/200/200'},
     ];
 
     return Scaffold(
@@ -37,10 +37,11 @@ class MyClassesScreen extends StatelessWidget {
           return Padding(
             padding: const EdgeInsets.symmetric(vertical: 6),
             child: CourseCard(
-              title: c['title'],
-              lecturer: c['lecturer'],
-              progress: c['progress'],
-            ),
+                title: c['title'],
+                lecturer: c['lecturer'],
+                progress: c['progress'],
+                imageUrl: c['image'],
+              ),
           );
         },
       ),

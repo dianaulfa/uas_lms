@@ -32,6 +32,9 @@ class CourseDetailScreen extends StatelessWidget {
           title: Text(title),
           backgroundColor: kPrimaryColor,
           bottom: const TabBar(
+            labelColor: Colors.white,
+            unselectedLabelColor: Colors.white70,
+            indicatorColor: Colors.white,
             tabs: [
               Tab(text: 'Materi'),
               Tab(text: 'Tugas Dan Kuis'),

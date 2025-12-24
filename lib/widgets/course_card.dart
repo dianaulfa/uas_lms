@@ -6,9 +6,10 @@ class CourseCard extends StatelessWidget {
   final String title;
   final String lecturer;
   final double progress; // 0.0 - 1.0
+  final String? imageUrl;
   final VoidCallback? onTap;
 
-  const CourseCard({Key? key, required this.title, required this.lecturer, required this.progress, this.onTap}) : super(key: key);
+  const CourseCard({Key? key, required this.title, required this.lecturer, required this.progress, this.imageUrl, this.onTap}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -30,17 +31,37 @@ class CourseCard extends StatelessWidget {
           ),
           child: Row(
             children: [
-              Container(
-                width: 48,
-                height: 48,
-                decoration: BoxDecoration(
-                  color: kPrimaryColor.withOpacity(0.9),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Center(
-                  child: Text(initials, style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
-                ),
-              ),
+              // show image if provided, otherwise show initials box
+              imageUrl != null && imageUrl!.isNotEmpty
+                  ? ClipRRect(
+                      borderRadius: BorderRadius.circular(8),
+                      child: Image.network(
+                        imageUrl!,
+                        width: 48,
+                        height: 48,
+                        fit: BoxFit.cover,
+                        errorBuilder: (context, error, stackTrace) => Container(
+                          width: 48,
+                          height: 48,
+                          decoration: BoxDecoration(
+                            color: kPrimaryColor.withOpacity(0.9),
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: Center(child: Text(initials, style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold))),
+                        ),
+                      ),
+                    )
+                  : Container(
+                      width: 48,
+                      height: 48,
+                      decoration: BoxDecoration(
+                        color: kPrimaryColor.withOpacity(0.9),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Center(
+                        child: Text(initials, style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+                      ),
+                    ),
               const SizedBox(width: 12),
               Expanded(
                 child: Column(

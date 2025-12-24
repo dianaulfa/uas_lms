@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'theme.dart';
+import 'core/notification_service.dart';
 
 class NotificationScreen extends StatelessWidget {
   const NotificationScreen({Key? key}) : super(key: key);
@@ -7,11 +8,13 @@ class NotificationScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final List<Map<String, String>> items = [
-      {'title': 'Anda telah mengirimkan tugas Pemrograman Mobile.', 'time': '3 Hari 9 Jam Yang Lalu'},
       {'title': 'Nilai Tugas Desain UI/UX sudah tersedia.', 'time': '1 Hari 2 Jam Yang Lalu'},
       {'title': 'Kuis Sistem Operasi dijadwalkan besok.', 'time': '12 Jam Yang Lalu'},
       {'title': 'Pengumuman: Perubahan jadwal kuliah.', 'time': '2 Hari Yang Lalu'},
     ];
+    // merge runtime notifications
+    final runtime = NotificationService.instance.items;
+    final merged = [...runtime, ...items];
 
     return Scaffold(
       backgroundColor: kBackgroundColor,
@@ -28,10 +31,10 @@ class NotificationScreen extends StatelessWidget {
       ),
       body: ListView.separated(
         padding: const EdgeInsets.all(12),
-        itemCount: items.length,
+        itemCount: merged.length,
         separatorBuilder: (_, __) => const SizedBox(height: 8),
         itemBuilder: (context, i) {
-          final it = items[i];
+          final it = merged[i];
           return ListTile(
             leading: Container(
               width: 44,

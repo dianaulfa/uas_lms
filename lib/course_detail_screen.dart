@@ -11,11 +11,28 @@ class CourseDetailScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // map course title to sample video links (you can customize links)
+    final Map<String, List<String>> videoLinks = {
+      'UI/UX': [
+        'https://www.youtube.com/watch?v=Ke90Tje7VS0',
+        'https://www.youtube.com/watch?v=3JluqTojuME'
+      ],
+      'Sistem Operasi': ['https://www.youtube.com/watch?v=3Qh5Xg2v7HM'],
+      'Kewarganegaraan': ['https://www.youtube.com/watch?v=dQw4w9WgXcQ'],
+      'Multimedia': ['https://www.youtube.com/watch?v=ysz5S6PUM-U'],
+      'Bahasa Inggris': ['https://www.youtube.com/watch?v=V-_O7nl0Ii0'],
+      'Olah Raga': ['https://www.youtube.com/watch?v=2Vv-BfVoq4g'],
+    };
+
     final List<Map<String, dynamic>> meetings = List.generate(8, (i) => {
       'title': 'Pertemuan ${i + 1}',
       'content': [
+        // main material
         {'title': 'Pengantar topik ${i + 1}', 'done': i % 3 == 0, 'type': i % 2 == 0 ? 'video' : 'doc'},
-        {'title': 'Latihan dan referensi', 'done': i % 2 == 0, 'type': 'doc'},
+        // latihan
+        {'title': 'Latihan ${i + 1}', 'done': false, 'type': 'exercise', 'instructions': 'Kerjakan soal latihan nomor 1-5 sesuai materi.'},
+        // referensi / tambahan
+        {'title': 'Referensi dan bahan bacaan', 'done': i % 2 == 0, 'type': 'doc'},
       ]
     });
 
@@ -58,18 +75,27 @@ class CourseDetailScreen extends StatelessWidget {
                     } else {
                       leading = const Icon(Icons.description);
                     }
-                    return ListTile(
-                      leading: leading,
-                      title: Text(s['title']),
-                      trailing: s['done'] == true ? Icon(Icons.check_circle, color: kAccentColor) : null,
-                      onTap: () {
-                        if (s['type'] == 'video') {
-                          Navigator.of(context).push(MaterialPageRoute(builder: (_) => VideoPlayerScreen(title: s['title'])));
-                        } else {
-                          Navigator.of(context).push(MaterialPageRoute(builder: (_) => DocumentViewerScreen(title: s['title'])));
-                        }
-                      },
-                    );
+                        return ListTile(
+                          leading: leading,
+                          title: Text(s['title']),
+                          trailing: s['done'] == true ? Icon(Icons.check_circle, color: kAccentColor) : null,
+                          onTap: () {
+                            if (s['type'] == 'video') {
+                              // pick an appropriate video link based on course title and meeting index
+                              final links = videoLinks[title] ?? [];
+                              final link = links.isNotEmpty ? links[idx % links.length] : null;
+                              Navigator.of(context).push(MaterialPageRoute(builder: (_) => VideoPlayerScreen(title: s['title'], videoUrl: link)));
+                            } else if (s['type'] == 'exercise') {
+                              showDialog(context: context, builder: (_) => AlertDialog(
+                                title: Text(s['title']),
+                                content: Text(s['instructions'] ?? 'Kerjakan latihan ini.'),
+                                actions: [TextButton(onPressed: () => Navigator.of(context).pop(), child: const Text('Tutup'))],
+                              ));
+                            } else {
+                              Navigator.of(context).push(MaterialPageRoute(builder: (_) => DocumentViewerScreen(title: s['title'])));
+                            }
+                          },
+                        );
                   }).toList(),
                 );
               },

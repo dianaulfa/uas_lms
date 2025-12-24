@@ -3,7 +3,8 @@ import 'theme.dart';
 
 class VideoPlayerScreen extends StatelessWidget {
   final String title;
-  const VideoPlayerScreen({Key? key, required this.title}) : super(key: key);
+  final String? videoUrl;
+  const VideoPlayerScreen({Key? key, required this.title, this.videoUrl}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -43,6 +44,14 @@ class VideoPlayerScreen extends StatelessWidget {
                   ],
                 ),
               ),
+            ),
+            if (videoUrl != null) Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                const Text('Link Video:', style: TextStyle(fontWeight: FontWeight.bold)),
+                const SizedBox(height: 6),
+                Text(videoUrl!, style: const TextStyle(color: Colors.blueAccent)),
+              ]),
             ),
 
             const SizedBox(height: 12),

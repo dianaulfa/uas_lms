@@ -56,10 +56,21 @@ class _LoginScreenState extends State<LoginScreen> {
                   child: Stack(
                     fit: StackFit.expand,
                     children: [
+                      // Show campus banner if available; otherwise keep solid color
                       Image.asset(
                         'assets/images/kampus.png',
                         fit: BoxFit.cover,
                         errorBuilder: (context, error, stackTrace) => const SizedBox.shrink(),
+                      ),
+                      // Center logo (from assets) if available
+                      Center(
+                        child: Image.asset(
+                          'assets/images/logo.png',
+                          width: 120,
+                          height: 120,
+                          fit: BoxFit.contain,
+                          errorBuilder: (context, error, stackTrace) => const SizedBox.shrink(),
+                        ),
                       ),
                       Positioned(
                         left: 16,
@@ -68,7 +79,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           'Welcome',
                           style: TextStyle(
                             color: Colors.white.withOpacity(0.95),
-                            fontSize: 28,
+                            fontSize: 20,
                             fontWeight: FontWeight.w700,
                           ),
                         ),
@@ -111,9 +122,12 @@ class _LoginScreenState extends State<LoginScreen> {
                     width: double.infinity,
                     child: ElevatedButton(
                       onPressed: () {
-                        Navigator.of(context).pushReplacement(
-                          MaterialPageRoute(builder: (_) => const MainScreen()),
-                        );
+                        final email = _emailController.text.trim();
+                        if (email.isEmpty) {
+                          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Masukkan email terlebih dahulu')));
+                          return;
+                        }
+                        Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => MainScreen(userEmail: email)));
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: kPrimaryColor,

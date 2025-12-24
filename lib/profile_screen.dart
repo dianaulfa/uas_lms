@@ -2,8 +2,16 @@ import 'package:flutter/material.dart';
 import 'theme.dart';
 import 'widgets/course_card.dart';
 
+String _displayNameFromEmail(String email) {
+  final parts = email.split('@');
+  if (parts.isEmpty) return 'Mahasiswa';
+  final name = parts[0];
+  return name.split('.').map((s) => s.isEmpty ? s : '${s[0].toUpperCase()}${s.substring(1)}').join(' ');
+}
+
 class ProfileScreen extends StatelessWidget {
-  const ProfileScreen({Key? key}) : super(key: key);
+  final String userEmail;
+  const ProfileScreen({Key? key, required this.userEmail}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -38,10 +46,23 @@ class ProfileScreen extends StatelessWidget {
                       right: 0,
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
-                        children: const [
-                          CircleAvatar(radius: 44, backgroundColor: Colors.white, child: Icon(Icons.person, size: 44, color: kPrimaryColor)),
-                          SizedBox(height: 8),
-                          Text('Nama Mahasiswa', style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold)),
+                        children: [
+                          Builder(builder: (context) {
+                            final username = userEmail.split('@').first;
+                            final assetPath = 'assets/images/$username.png';
+                            final initials = username.isNotEmpty ? username[0].toUpperCase() : 'U';
+                            return FutureBuilder<bool>(
+                              future: precacheImage(AssetImage(assetPath), context).then((_) => true).catchError((_) => false),
+                              builder: (context, snap) {
+                                if (snap.hasData && snap.data == true) {
+                                  return CircleAvatar(radius: 44, backgroundImage: AssetImage(assetPath), backgroundColor: Colors.white);
+                                }
+                                return CircleAvatar(radius: 44, backgroundColor: Colors.white, child: Text(initials, style: const TextStyle(fontSize: 28, color: kPrimaryColor)));
+                              },
+                            );
+                          }),
+                          const SizedBox(height: 8),
+                          Text(_displayNameFromEmail(userEmail), style: const TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold)),
                         ],
                       ),
                     ),
@@ -81,7 +102,7 @@ class ProfileScreen extends StatelessWidget {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                const Text('Email: mahasiswa@example.com'),
+                                Text('Email: $userEmail'),
                                 const SizedBox(height: 8),
                                 const Text('Program Studi: Teknik Informatika'),
                                 const SizedBox(height: 8),

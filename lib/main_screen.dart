@@ -5,7 +5,8 @@ import 'notification_screen.dart';
 import 'theme.dart';
 
 class MainScreen extends StatefulWidget {
-  const MainScreen({Key? key}) : super(key: key);
+  final String userEmail;
+  const MainScreen({Key? key, required this.userEmail}) : super(key: key);
 
   @override
   State<MainScreen> createState() => _MainScreenState();
@@ -14,11 +15,17 @@ class MainScreen extends StatefulWidget {
 class _MainScreenState extends State<MainScreen> {
   int _currentIndex = 0;
 
-  final List<Widget> _pages = [
-    const HomeScreen(),
-    const MyClassesScreen(),
-    const NotificationScreen(),
-  ];
+  late final List<Widget> _pages;
+
+  @override
+  void initState() {
+    super.initState();
+    _pages = [
+      HomeScreen(userEmail: widget.userEmail),
+      const MyClassesScreen(),
+      const NotificationScreen(),
+    ];
+  }
 
   @override
   Widget build(BuildContext context) {
